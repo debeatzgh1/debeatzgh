@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floating Vertical Button Menu</title>
+<title>Floating Fullscreen Iframe Menu</title>
 <style>
   @keyframes fadeSlideUp {
     0% { opacity: 0; transform: translateY(20px); }
@@ -17,19 +17,12 @@
     100% { transform: scale(1); }
   }
 
-  /* Floating container */
-  .floating-btn-group {
+  /* Floating trigger button */
+  .trigger-toggle {
     position: fixed;
     top: 20px;
     left: 20px;
     z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  /* Trigger button */
-  .trigger-btn {
     background: #2563eb;
     color: #fff;
     padding: 10px 16px;
@@ -41,18 +34,31 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.25);
   }
 
-  /* App buttons (hidden initially) */
-  .app-btn {
+  /* Fullscreen menu */
+  #button-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
+    padding: 50px 20px;
+    overflow-y: auto;
+  }
+  #button-menu .menu-btn {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 15px auto;
+    padding: 15px;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 12px;
+    text-align: center;
     background: #2563eb;
     color: #fff;
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 700;
+    text-decoration: none;
     cursor: pointer;
-    display: none; /* Hidden until trigger clicked */
-    box-shadow: 0 3px 8px rgba(0,0,0,0.25);
-    white-space: nowrap;
   }
 
   /* Fullscreen modal iframe */
@@ -60,7 +66,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 9998;
+    z-index: 9999;
     background: rgba(0,0,0,0.6);
     backdrop-filter: blur(4px);
   }
@@ -95,10 +101,11 @@
 </head>
 <body>
 
-<!-- Floating button container -->
-<div class="floating-btn-group">
-  <div class="trigger-btn">☰ Apps</div>
-</div>
+<!-- Trigger button -->
+<div class="trigger-toggle">☰ Apps</div>
+
+<!-- Fullscreen menu -->
+<div id="button-menu"></div>
 
 <!-- Iframe modal -->
 <div id="iframe-modal">
@@ -111,41 +118,42 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  const triggerBtn = document.querySelector(".trigger-btn");
-  const btnGroup = document.querySelector(".floating-btn-group");
+  const trigger = document.querySelector(".trigger-toggle");
+  const menu = document.getElementById("button-menu");
+  const iframeModal = document.getElementById("iframe-modal");
+  const iframe = document.getElementById("modal-iframe");
 
-  // List of apps with names and URLs
+  // List of all buttons with their URLs
   const apps = [
     { name: "Firebase UI Widgets", url: "https://debeatzgh1.github.io/firebase-front-end-components/" },
     { name: "Interactive Quizzes", url: "https://debeatzgh1.github.io/-Interactive-Knowledge-Quizzes/" },
     { name: "My Brand Shop", url: "https://debeatzgh1.github.io/-My-Brand-Online-Digital-Products-Affiliate-Shop/" },
     { name: "Links Menu", url: "https://msha.ke/debeatzgh" },
     { name: "Iframe Generator", url: "https://debeatzgh1.github.io/Blogger-iframe-embed-generator/" },
-    { name: "Home", url: "https://debeatzgh1.github.io/Home-/" }
+    { name: "Extra App", url: "https://debeatzgh1.github.io/Home-/" }
   ];
 
-  // Create app buttons
+  // Generate buttons in the fullscreen menu
   apps.forEach(app => {
-    const btn = document.createElement("div");
-    btn.className = "app-btn";
+    const btn = document.createElement("a");
+    btn.className = "menu-btn";
     btn.innerText = app.name;
-    btn.onclick = () => openIframe(app.url);
-    btnGroup.appendChild(btn);
+    btn.href = "#";
+    btn.onclick = () => {
+      openIframe(app.url);
+      return false;
+    };
+    menu.appendChild(btn);
   });
 
-  // Toggle app buttons visibility
-  let isOpen = false;
-  triggerBtn.addEventListener("click", () => {
-    isOpen = !isOpen;
-    const appBtns = document.querySelectorAll(".app-btn");
-    appBtns.forEach(btn => btn.style.display = isOpen ? "block" : "none");
-  });
+  // Show the fullscreen menu
+  trigger.onclick = () => {
+    menu.style.display = "block";
+  };
 
-  // Iframe modal elements
-  const iframeModal = document.getElementById("iframe-modal");
-  const iframe = document.getElementById("modal-iframe");
-
+  // Open URL in fullscreen iframe
   function openIframe(url){
+    menu.style.display = "none";
     iframe.src = url;
     iframeModal.style.display = "block";
   }
