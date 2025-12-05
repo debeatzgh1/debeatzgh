@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6-Button Live Carousel + Iframe Viewer</title>
+<title>6-Button Live Carousel + Fullscreen Iframe</title>
 <style>
 body { font-family: Arial,sans-serif; background:#0a0a0a; color:#fff; display:flex; flex-direction:column; align-items:center; padding:20px; }
 h1 { color:#00ff88; text-align:center; margin-bottom:20px; }
@@ -33,7 +33,7 @@ pre#output { width:100%; max-width:800px; background:#111; padding:12px; border-
 </head>
 <body>
 
-<h1>6-Button Live Carousel + Iframe Viewer</h1>
+<h1>6-Button Live Carousel + Fullscreen Iframe</h1>
 
 <label for="htmlInput">Paste your HTML code here:</label>
 <textarea id="htmlInput" placeholder="Paste your HTML code with 6 buttons here..."></textarea>
@@ -85,6 +85,7 @@ for(let i=1;i<=6;i++){
   previewBtn.textContent = `Button ${i}`;
   previewBtn.style.background = 'green';
   previewBtn.target = '_blank';
+  previewBtn.onclick = ()=>openIframe(previewBtn.href);
   previewDiv.appendChild(previewBtn);
 }
 
@@ -92,6 +93,7 @@ const htmlInput = document.getElementById('htmlInput');
 const updateBtn = document.getElementById('updateBtn');
 const output = document.getElementById('output');
 
+// Update live preview and HTML
 function updatePreviewAndHTML(){
   let html = htmlInput.value;
 
@@ -128,7 +130,7 @@ const menu = document.getElementById("button-menu");
 const iframeModal = document.getElementById("iframe-modal");
 const iframe = document.getElementById("modal-iframe");
 
-// Sample 6 apps for carousel
+// Default 6 apps
 const apps = [
   { name: "Button 1", url: "#" },
   { name: "Button 2", url: "#" },
@@ -138,6 +140,7 @@ const apps = [
   { name: "Button 6", url: "#" }
 ];
 
+// Generate fullscreen menu buttons
 apps.forEach(app=>{
   const btn = document.createElement("a");
   btn.className = "menu-btn";
@@ -147,14 +150,17 @@ apps.forEach(app=>{
   menu.appendChild(btn);
 });
 
+// Trigger menu
 trigger.onclick = ()=>{ menu.style.display="block"; };
 
+// Open iframe function
 function openIframe(url){
   menu.style.display="none";
   iframe.src = url;
   iframeModal.style.display="block";
 }
 
+// Close iframe
 document.addEventListener("click", e=>{
   if(e.target.classList.contains("close-btn") || e.target.id==="iframe-modal"){
     iframeModal.style.display="none";
@@ -162,6 +168,5 @@ document.addEventListener("click", e=>{
   }
 });
 </script>
-
 </body>
 </html>
