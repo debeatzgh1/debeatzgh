@@ -84,7 +84,7 @@
 
   <a class="master-btn" data-url="https://debeatzgh1.github.io/-Interactive-Knowledge-Quizzes/">Quiz</a>
 
-  <a class="master-btn" data-url="https://msha.ke/debeatzgh">Menu</a>
+  <a class="master-btn" data-url="https://debeatzgh1.github.io/63etx/">L-G</a>
 
   <a class="master-btn" data-url="https://debeatzgh1.github.io/-My-Brand-Online-Digital-Products-Affiliate-Shop/">Build</a>
 
