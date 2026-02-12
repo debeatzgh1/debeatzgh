@@ -126,7 +126,7 @@
         <span class="hero-tagline">AI & DIGITAL CREATOR HUB</span>
         <h1 class="hero-title">Empowering the Next Generation of Digital Entrepreneurs</h1>
         <p class="hero-subtitle">
-            Insights on technology, AI, and productivity. We build custom chatbots, websites, and mobile apps to help you scale your online presence.
+            Insights on technology, AI, and productivity. Build custom chatbots, websites, widgets and mobile apps to help you scale your online presence.
         </p>
 
         <div class="services-grid">
