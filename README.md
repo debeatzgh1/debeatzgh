@@ -3,6 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator OS | Booting...</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap');
+        
+        body { 
+            background: #02040a; 
+            color: #e2e8f0; 
+            font-family: 'Space Grotesk', sans-serif; 
+            overflow: hidden; /* Locked until boot finishes */
+            margin: 0;
+        }
+
+        /* 1. BOOT SCREEN */
+        #boot-screen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 20px;
+        }
+
+        .terminal-text {
+            color: #22d3ee;
+            font-size: 14px;
+            text-shadow: 0 0 5px rgba(34, 211, 238, 0.5);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .cursor { display: inline-block; width: 10px; height: 18px; background: #22d3ee; animation: blink 0.8s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* 2. BACKGROUND & GLASS */
+        #bg-canvas { position: fixed; inset: 0; z-index: -1; background: #02040a; }
+        .glass { 
+            background: rgba(10, 15, 28, 0.7); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(56, 189, 248, 0.1); 
+        }
+        
+        /* 3. VIEWPORT */
+        #viewport {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: none;
+            z-index: 10000;
+            animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .nav-active { color: #22d3ee; border-bottom: 2px solid #22d3ee; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 0.8s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .ticker-move { display: inline-block; animation: ticker 25s linear infinite; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* Glitch Animation for Boot */
+        .glitch-out { animation: glitchClose 0.5s forwards; }
+        @keyframes glitchClose {
+            0% { transform: scaleY(1); opacity: 1; }
+            50% { transform: scaleY(0.01) scaleX(1.2); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 0; visibility: hidden; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="boot-screen">
+        <div class="terminal-text">
+            <div id="log"></div>
+            <div id="boot-status" class="mt-4 font-bold"></div>
+            <span class="cursor"></span>
+        </div>
+    </div>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <div id="main-ui" style="opacity: 0; transition: opacity 1s ease;">
+        <div class="w-full h-10 glass border-b border-white/5 flex items-center sticky top-0 z-50">
+            <div class="overflow-hidden whitespace-nowrap w-full">
+                <div class="ticker-move flex gap-16 text-[10px] font-bold tracking-[0.3em] text-cyan-400">
+                    <span>STATUS: ENCRYPTED</span>
+                    <a href="https://debeatzgh1.github.io/Home-/" target="_blank">HOME_DASHBOARD</a>
+                    <a href="https://debeatzgh1.github.io/ai-chat/" target="_blank">AI_NODE_ACTIVE</a>
+                    <a href="https://debeatzgh1.github.io/blogs/" target="_blank">ARCHIVE_01</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-6 pt-16">
+            <header class="flex flex-col md:flex-row justify-between items-center mb-16 gap-8">
+                <div>
+                    <h1 class="text-6xl font-black text-white">MATRIX_<span class="text-cyan-500">OS</span></h1>
+                    <p class="text-cyan-400/60 text-[10px] font-mono tracking-[0.4em] uppercase">Ready for input...</p>
+                </div>
+                <nav class="flex gap-10 text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase">
+                    <button onclick="switchTab('tab1', this)" class="nav-active pb-2">Grid</button>
+                    <button onclick="switchTab('tab2', this)" class="pb-2">Directory</button>
+                    <button onclick="switchTab('tab3', this)" class="pb-2">Advanced</button>
+                </nav>
+            </header>
+
+            <div id="tab1" class="tab-panel active">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <div onclick="openView('https://debeatzgh1.github.io/Home-/', 'Home')" class="glass p-10 rounded-3xl flex flex-col items-center hover:bg-cyan-500/10 cursor-pointer transition group">
+                        <i class="fas fa-terminal text-2xl mb-4 group-hover:text-cyan-400"></i>
+                        <span class="text-[9px] font-black">CORE_HOME</span>
+                    </div>
+                    <div onclick="openView('https://debeatzgh1.github.io/ai-chat/', 'AI')" class="glass p-10 rounded-3xl flex flex-col items-center hover:bg-cyan-500/10 cursor-pointer transition group">
+                        <i class="fas fa-microchip text-2xl mb-4 group-hover:text-cyan-400"></i>
+                        <span class="text-[9px] font-black">AI_CORE</span>
+                    </div>
+                    </div>
+            </div>
+
+            <div id="tab3" class="tab-panel">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="glass p-10 rounded-[3rem] border-t-2 border-cyan-500">
+                        <h3 class="text-2xl font-bold mb-4">Central Dashboard</h3>
+                        <p class="text-slate-400 text-sm mb-8">Access the primary node for navigation and tools.</p>
+                        <button onclick="openView('https://debeatzgh1.github.io/Home-/')" class="w-full bg-cyan-500 text-black py-4 rounded-xl font-black text-xs">LAUNCH MODULE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewport">
+        <div class="flex items-center justify-between p-4 bg-black border-b border-white/10">
+            <span id="view-title" class="text-xs font-black uppercase text-cyan-500">System_Running</span>
+            <button onclick="closeView()" class="text-2xl">&times;</button>
+        </div>
+        <iframe id="frame-src" src="" class="w-full h-full border-none"></iframe>
+    </div>
+
+    <script>
+        // --- BOOT SEQUENCE LOGIC ---
+        const bootLogs = [
+            "> INITIALIZING SYSTEM KERNEL...",
+            "> LOADING NEURAL NETWORK UI...",
+            "> ENCRYPTING CONNECTION PACKETS...",
+            "> CONNECTING TO GITHUB_PAGES_REMOTE...",
+            "> USER AUTHENTICATED: ACCESS GRANTED."
+        ];
+
+        let logIdx = 0;
+        function runBoot() {
+            const logEl = document.getElementById('log');
+            if (logIdx < bootLogs.length) {
+                const p = document.createElement('p');
+                p.textContent = bootLogs[logIdx];
+                logEl.appendChild(p);
+                logIdx++;
+                setTimeout(runBoot, 600);
+            } else {
+                document.getElementById('boot-status').textContent = "BOOT COMPLETE. PRESS TO ENTER.";
+                document.getElementById('boot-screen').onclick = unlockSystem;
+            }
+        }
+
+        function unlockSystem() {
+            const screen = document.getElementById('boot-screen');
+            screen.classList.add('glitch-out');
+            setTimeout(() => {
+                screen.style.display = 'none';
+                document.getElementById('main-ui').style.opacity = '1';
+                document.body.style.overflow = 'auto';
+            }, 500);
+        }
+
+        // --- PARTICLE BACKGROUND ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(34, 211, 238, 0.2)';
+                ctx.beginPath(); ctx.arc(this.x, this.y, 1, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        function init() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 80; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        // --- DASHBOARD LOGIC ---
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('nav-active');
+        }
+
+        function openView(url, title) {
+            document.getElementById('frame-src').src = url;
+            document.getElementById('view-title').textContent = title;
+            document.getElementById('viewport').style.display = 'block';
+        }
+
+        function closeView() {
+            document.getElementById('viewport').style.display = 'none';
+            document.getElementById('frame-src').src = '';
+        }
+
+        window.onload = () => { init(); animate(); runBoot(); };
+    </script>
+</body>
+</html>
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #1e293b 0%, #334155 100%);
