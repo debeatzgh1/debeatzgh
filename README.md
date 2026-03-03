@@ -1,8 +1,9 @@
-<html lang="en">
+
+<html lang="en-GB">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glass UI Generator</title>
+    <title>Glass UI Generator | Pro Dashboard</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -16,7 +17,7 @@
             padding: 0;
             background-color: var(--bg-color);
             color: #ffffff;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,209 +25,171 @@
             overflow: hidden;
         }
 
-        /* Ambient Background Glow */
+        /* Ambient Glow */
         .orb {
             position: absolute;
-            width: 400px;
-            height: 400px;
+            width: 500px;
+            height: 500px;
             background: var(--accent-glow);
-            filter: blur(80px);
+            filter: blur(100px);
             border-radius: 50%;
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.4;
+            animation: pulse 8s infinite alternate;
         }
 
-        /* The Glass Card */
+        @keyframes pulse {
+            from { transform: scale(1); opacity: 0.4; }
+            to { transform: scale(1.2); opacity: 0.6; }
+        }
+
+        /* Main Dashboard Card */
         .glass-container {
-            width: 80%;
-            max-width: 600px;
+            width: 90%;
+            max-width: 500px;
             padding: 40px;
             background: var(--glass-bg);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 28px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
             text-align: center;
         }
 
-        h1 { font-weight: 300; letter-spacing: 1px; }
-        p { color: #94a3b8; }
-    </style>
-</head>
-<body>
-    <div class="orb"></div>
-    <div class="glass-container">
-        <h1>Glass UI Generator 💎</h1>
-        <p>Real-time glassmorphism CSS generator for modern projects.</p>
-        <div id="preview-box" style="margin-top: 20px; height: 100px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px dashed var(--glass-border);">
-            </div>
-    </div>
-</body>
-</html>
-
-
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <style>
-        :root {
-            --nav-bg: rgba(13, 17, 23, 0.95);
-            --nav-border: #30363d;
-            /* Changed to Deep Pink */
-            --nav-accent: #FF1493; 
-            --nav-hover: #FF69B4;
-            --glow-color: rgba(255, 20, 147, 0.5);
-        }
-
-        /* Dock Container */
-        .nav-dock {
-            position: fixed;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            z-index: 10000;
-            font-family: sans-serif;
-        }
-
-        /* Launcher Button */
-        #nav-launcher {
-            width: 42px;
-            height: 42px;
-            background: var(--nav-bg);
-            border: 2px solid var(--nav-border);
-            color: var(--nav-accent);
+        .controls { margin-top: 30px; text-align: left; display: grid; gap: 15px; }
+        input[type=range] { width: 100%; cursor: pointer; }
+        
+        #code-output {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(0,0,0,0.4);
             border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            padding: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #60a5fa;
+            border: 1px solid #1e293b;
         }
 
-        #nav-launcher.open {
+        /* Full Page Overlay */
+        #url-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        #close-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            z-index: 10000;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            background: var(--nav-accent);
-            border-color: var(--nav-accent);
-            transform: rotate(-180deg);
+            border-radius: 50px;
+            cursor: not-allowed;
+            opacity: 0.5;
+            transition: all 0.3s ease;
         }
 
-        /* Button Group */
-        .nav-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .nav-group.active {
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .nav-btn {
-            width: 38px;
-            height: 38px;
-            background: var(--nav-bg);
-            border: 1px solid var(--nav-border);
-            color: #c9d1d9;
-            border-radius: 50%;
+        #close-btn.active {
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transform: scale(0.5) translateX(40px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-decoration: none;
-        }
-
-        /* Active State for Buttons */
-        .nav-group.active .nav-btn {
             opacity: 1;
-            transform: scale(1) translateX(0);
+            background: #e11d48;
         }
-
-        /* Heartbeat Glow Animation */
-        @keyframes heartbeatGlow {
-            0% { box-shadow: 0 0 0 0 var(--glow-color); transform: scale(1); }
-            50% { box-shadow: 0 0 20px 8px var(--glow-color); transform: scale(1.15); }
-            100% { box-shadow: 0 0 0 0 var(--glow-color); transform: scale(1); }
-        }
-
-        .heartbeat-active {
-            animation: heartbeatGlow 1.2s ease-in-out;
-        }
-
-        .nav-btn:hover {
-            background: var(--nav-accent);
-            color: white;
-            border-color: var(--nav-accent);
-        }
-
-        /* Staggered transition delays */
-        .nav-group.active .nav-btn:nth-child(1) { transition-delay: 0.1s; }
-        .nav-group.active .nav-btn:nth-child(2) { transition-delay: 0.2s; }
-        .nav-group.active .nav-btn:nth-child(3) { transition-delay: 0.3s; }
-
-        svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
     </style>
 </head>
 <body>
 
-    <div class="nav-dock">
-        <button id="nav-launcher" onclick="toggleNav()">
-            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
+<div class="orb"></div>
 
-        <div class="nav-group" id="navGroup">
-            <button class="nav-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Top">
-                <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
-            </button>
-
-            <a href="https://debeatzgh1.github.io/1/" class="nav-btn" title="Home">
-                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            </a>
-
-            <button class="nav-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})" title="Bottom">
-                <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
-        </div>
+<div class="glass-container">
+    <h2 style="margin-top:0;">Glass UI Configurator 💎</h2>
+    <div class="controls">
+        <label>Transparency: <span id="op-val">0.1</span></label>
+        <input type="range" id="op-in" min="0" max="1" step="0.01" value="0.1">
+        
+        <label>Blur: <span id="bl-val">15</span>px</label>
+        <input type="range" id="bl-in" min="0" max="40" step="1" value="15">
     </div>
+    <div id="code-output">Loading config...</div>
+</div>
 
-    <script>
-        function toggleNav() {
-            const group = document.getElementById('navGroup');
-            const launcher = document.getElementById('nav-launcher');
-            const buttons = document.querySelectorAll('.nav-btn');
-            
-            const isOpening = !group.classList.contains('active');
-            
-            group.classList.toggle('active');
-            launcher.classList.toggle('open');
+<div id="url-overlay">
+    <button id="close-btn" onclick="closeOverlay()">Wait (3s)</button>
+    <iframe id="overlay-frame" src="https://debeatzgh1.github.io/firebase-front-end-components/" 
+            style="width:100%; height:100%; border:none;"></iframe>
+</div>
 
-            if (isOpening) {
-                buttons.forEach((btn, index) => {
-                    // Reset animation
-                    btn.classList.remove('heartbeat-active');
-                    void btn.offsetWidth; // Force reflow
-                    
-                    // Trigger staggered heartbeat
-                    setTimeout(() => {
-                        btn.classList.add('heartbeat-active');
-                    }, (index + 1) * 200);
-                });
+<script>
+    // --- GLASS GENERATOR LOGIC ---
+    const opIn = document.getElementById('op-in');
+    const blIn = document.getElementById('bl-in');
+    const glass = document.querySelector('.glass-container');
+    const code = document.getElementById('code-output');
+
+    function syncUI() {
+        const o = opIn.value; const b = blIn.value;
+        document.getElementById('op-val').innerText = o;
+        document.getElementById('bl-val').innerText = b;
+        
+        glass.style.background = `rgba(255, 255, 255, ${o})`;
+        glass.style.backdropFilter = `blur(${b}px)`;
+        code.innerHTML = `background: rgba(255, 255, 255, ${o});<br>backdrop-filter: blur(${b}px);`;
+    }
+    [opIn, blIn].forEach(i => i.addEventListener('input', syncUI));
+    syncUI();
+
+    // --- OVERLAY LOGIC ---
+    const overlay = document.getElementById('url-overlay');
+    const closeBtn = document.getElementById('close-btn');
+    let countdown;
+
+    function showOverlay() {
+        // Referral check: Don't show if user arrives from the same URL
+        if (document.referrer.includes("debeatzgh1.github.io/firebase-front-end-components")) return;
+
+        overlay.style.display = 'block';
+        startCountdown();
+    }
+
+    function startCountdown() {
+        let timer = 3;
+        closeBtn.classList.remove('active');
+        closeBtn.disabled = true;
+        closeBtn.innerText = `Wait (${timer}s)`;
+
+        clearInterval(countdown);
+        countdown = setInterval(() => {
+            timer--;
+            if (timer > 0) {
+                closeBtn.innerText = `Wait (${timer}s)`;
+            } else {
+                clearInterval(countdown);
+                closeBtn.innerText = "Close [X]";
+                closeBtn.classList.add('active');
+                closeBtn.disabled = false;
             }
-        }
-    </script>
+        }, 1000);
+    }
+
+    function closeOverlay() {
+        overlay.style.display = 'none';
+    }
+
+    // Initial Trigger
+    window.onload = () => setTimeout(showOverlay, 1000);
+
+    // Loop every 6 seconds
+    setInterval(() => {
+        if (overlay.style.display === 'none') showOverlay();
+    }, 6000);
+</script>
 
 </body>
 </html>
