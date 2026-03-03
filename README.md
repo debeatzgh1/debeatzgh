@@ -1,3 +1,70 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass UI Generator</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --accent-glow: linear-gradient(135.2deg, #e11d48 1.1%, #3b82f6 98.9%);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Ambient Background Glow */
+        .orb {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: var(--accent-glow);
+            filter: blur(80px);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* The Glass Card */
+        .glass-container {
+            width: 80%;
+            max-width: 600px;
+            padding: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            text-align: center;
+        }
+
+        h1 { font-weight: 300; letter-spacing: 1px; }
+        p { color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="orb"></div>
+    <div class="glass-container">
+        <h1>Glass UI Generator 💎</h1>
+        <p>Real-time glassmorphism CSS generator for modern projects.</p>
+        <div id="preview-box" style="margin-top: 20px; height: 100px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px dashed var(--glass-border);">
+            </div>
+    </div>
+</body>
+</html>
+
 
 <html lang="en">
 <head>
