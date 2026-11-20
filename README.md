@@ -1086,7 +1086,7 @@
 
   <a class="master-btn" data-url="https://debeatzgh1.github.io/63etx/">L-G</a>
 
-  <a class="master-btn" data-url="https://debeatzgh1.github.io/-My-Brand-Online-Digital-Products-Affiliate-Shop/">Build</a>
+  <a class="master-btn" data-url="https://bit.ly/m/Global-Agency-">Build</a>
 
   <a class="master-btn" data-url="https://debeatzgh1.github.io/Blogger-iframe-embed-generator/">Iframe Generator</a>
 </div>
